@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -43,6 +44,8 @@ class User(AbstractBaseUser):
     profile_image = models.ImageField(null=True)
     bio = models.CharField(max_length=300, blank=True)
     join_at = models.DateTimeField(auto_now_add=True)
+
+    follow = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='followee')
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
