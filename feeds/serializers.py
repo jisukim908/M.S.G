@@ -14,11 +14,10 @@ class FeedDetailSerializer(serializers.ModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
-    
+
     class Meta:
         model = Feed
         fields = ['title','context', 'image','video', 'created_at', 'updated_at', 'user', "comments_count", "likes_count",]
-
 
 
 class FeedListSerializer(serializers.ModelSerializer):
