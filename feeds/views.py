@@ -1,6 +1,9 @@
 from rest_framework.views import APIView
+<<<<<<< HEAD
 from feeds.models import Feed
 from feeds.serializers import FeedListSerializer, FeedCreateSerializer, FeedDetailSerializer
+=======
+>>>>>>> f9d44eb (회원가입, 로그인, 수정 완료)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
