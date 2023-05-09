@@ -1,4 +1,9 @@
-# Django Restframework 기반 video&writing platfrom 입니다.
+# video&writing platfrom  
+
+
+It is a video&writing platfrom based on Django Restframework.
+
+----------
 
 ## project description
 It is a service that freely upload and share videos and posts like YouTube and Instagram.
