@@ -1,4 +1,9 @@
-# Django Restframework 기반 video&writing platfrom 입니다.
+# video&writing platfrom  
+
+
+It is a video&writing platfrom based on Django Restframework.
+
+----------
 
 ## project description
 It is a service that freely upload and share videos and posts like YouTube and Instagram.
@@ -22,6 +27,8 @@ If you want the project to run, install the requirements.txt package. For the fr
 -------------
 
 If you want more informations, please refer to the SA url below
+
+
 SA : https://www.notion.so/SA-7e7abfa330624a93a56a7628d7ab790d
 
 
