@@ -1,6 +1,7 @@
-from feeds.models import Feed
 from rest_framework import serializers
+from .models import Feed, Comment
 
+<<<<<<< HEAD
 class FeedDetailSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
@@ -40,3 +41,34 @@ class FeedCreateSerializer(serializers.ModelSerializer):
         model = Feed
         fields = ['title','context', 'image','video',]
 
+=======
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ["id", "feed", "text", "created_at", "updated_at", "likes", "dislikes"]
+
+
+class FeedSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
+    likes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Feed
+        fields = [
+            "id",
+            "title",
+            "content",
+            "image",
+            "video",
+            "created_at",
+            "updated_at",
+            "likes",
+            "comments",
+            "likes_count",
+        ]
+        read_only_fields = ["likes", "comments", "likes_count"]
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+>>>>>>> b7c59d0 (댓글 생성,수정,삭제 / 피드 생성,수정,삭제)
