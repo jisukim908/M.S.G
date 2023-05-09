@@ -1,4 +1,4 @@
-from rest_framework.views import APIVIEW
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # Create your views here.
