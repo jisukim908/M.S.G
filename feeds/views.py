@@ -5,12 +5,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from hitcount.views import HitCountDetailView
+from django.views.generic import ListView
 
 
-class FeedListView(APIView):
-    ### 게시글마다 각각의 조회수가 필요할 것 같아요
+class FeedListView(APIView, ListView):
+    # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
     model = Feed    
     count_hit = True 
+    paginate_by = 12
 
     def get(self, request):
         feeds = Feed.objects.all().order_by("-created_at")
@@ -35,6 +37,8 @@ class CommentsView(APIView):
         return Response({"message": "comment delete 요청입니다!"})
 
 class FeedDetailView(APIView, HitCountDetailView):
+    #feed 상세페이지
+
     # 조회수
     model = Feed    
     count_hit = True 
@@ -49,6 +53,8 @@ class FeedDetailView(APIView, HitCountDetailView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FeedCreateView(APIView):
+    # feed 만들기, 지우기 기능. 
+    # SA에 channel에서 수정 기능 구현으로 되어있어 일단 주석 처리
     def post(self, request):
         serializer = FeedCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -57,17 +63,17 @@ class FeedCreateView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, feed_id):
-        feed = get_object_or_404(Feed, id=feed_id)
-        if request.user == feed.user:
-            serializer = FeedCreateSerializer(feed, data=serializer.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response("수정 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
+    # def update(self, request, feed_id):
+    #     feed = get_object_or_404(Feed, id=feed_id)
+    #     if request.user == feed.user:
+    #         serializer = FeedCreateSerializer(feed, data=serializer.data)
+    #         if serializer.is_valid():
+    #             serializer.save()
+    #             return Response(serializer.data, status=status.HTTP_200_OK)
+    #         else:
+    #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     else:
+    #         return Response("수정 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
