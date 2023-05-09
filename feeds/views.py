@@ -1,16 +1,23 @@
 from rest_framework.views import APIView
 from feeds.models import Feed
+from feeds.serializers import FeedListSerializer, FeedCreateSerializer, FeedDetailSerializer
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from hitcount.views import HitCountDetailView
-# Create your views here.
 
-class FeedListView():
+
+class FeedListView(APIView):
+    ### 게시글마다 각각의 조회수가 필요할 것 같아요
+    model = Feed    
+    count_hit = True 
+
     def get(self, request):
-        #전체 피드 최신순으로 보기 
-        #순위 등 포함
-        return Response({"message": "feedlist get 요청입니다!"})
+        feeds = Feed.objects.all().order_by("-created_at")
+        seriailizer = FeedListSerializer(feeds, many=True)
+        return Response(seriailizer.data, status=status.HTTP_200_OK)
 
-class CommentsView():
+class CommentsView(APIView):
     def get(self, request):
         #댓글 가져오기
         return Response({"message": "comment get 요청입니다!"})
@@ -27,7 +34,7 @@ class CommentsView():
         #댓글 삭제
         return Response({"message": "comment delete 요청입니다!"})
 
-class FeedDetailView(HitCountDetailView):
+class FeedDetailView(APIView, HitCountDetailView):
     # 조회수
     model = Feed    
     count_hit = True 
@@ -36,20 +43,36 @@ class FeedDetailView(HitCountDetailView):
     # {# the total hits for the object #}
     # {{ hitcount.total_hits }}
 
-    def get(self, request, post_id):
-        #게시글 상세, 게시글 작성자 정보
-        return Response({"message": "get 요청입니다!"})
+    def get(self, request, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        serializer = FeedDetailSerializer(feed)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class FeedCreateView():
+class FeedCreateView(APIView):
     def post(self, request):
-        #게시글 쓰기
-        return Response({"message": "feed post 요청입니다!"})
+        serializer = FeedCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, post_id):
-        #게시글 수정
-        return Response({"message": "feed update 요청입니다!"})
+    def update(self, request, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        if request.user == feed.user:
+            serializer = FeedCreateSerializer(feed, data=serializer.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("수정 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
 
-    def delete(self, request, post_id):
-        #게시글 삭제
-        return Response({"message": "feed delete 요청입니다!"})
+    def delete(self, request, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        if request.user == feed.user:
+            feed.delete()
+            return Response("게시글이 삭제되었습니다", status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response("삭제 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
