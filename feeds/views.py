@@ -76,3 +76,14 @@ class FeedCreateView(APIView):
             return Response("게시글이 삭제되었습니다", status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("삭제 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
+
+
+class LikeView(APIView):
+    def post(self, request, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        if request.user in feed.likes.all():
+            feed.likes.remove(request.user) # like 요청 유저가 없으면 제거
+            return Response("좋아요", status=status.HTTP_200_OK)
+        else:
+            feed.likes.add(request.user) #like 요청 유저가 없으면 추가
+            return Response("좋아요 취소!", status=status.HTTP_200_OK)
