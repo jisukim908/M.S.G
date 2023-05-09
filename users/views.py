@@ -54,7 +54,6 @@ class UserProfileView(APIView):
         else:
             return Response({"message":"유저가 다릅니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserSignupView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
