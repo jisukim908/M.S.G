@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'users',
     'feeds',
     'channels',
+    'hitcount',
 ]
 
 MIDDLEWARE = [

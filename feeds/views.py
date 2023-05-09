@@ -1,6 +1,7 @@
-from rest_framework.views import APIVIEW
+from rest_framework.views import APIView
+from feeds.models import Feed
 from rest_framework.response import Response
-
+from hitcount.views import HitCountDetailView
 # Create your views here.
 
 class FeedListView():
@@ -26,7 +27,15 @@ class CommentsView():
         #댓글 삭제
         return Response({"message": "comment delete 요청입니다!"})
 
-class FeedDetailView():
+class FeedDetailView(HitCountDetailView):
+    # 조회수
+    model = Feed    
+    count_hit = True 
+
+    # 탬플릿에서 조회수 나타내기
+    # {# the total hits for the object #}
+    # {{ hitcount.total_hits }}
+
     def get(self, request, post_id):
         #게시글 상세, 게시글 작성자 정보
         return Response({"message": "get 요청입니다!"})
@@ -44,5 +53,3 @@ class FeedCreateView():
     def delete(self, request, post_id):
         #게시글 삭제
         return Response({"message": "feed delete 요청입니다!"})
-
-
