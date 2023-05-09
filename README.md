@@ -22,6 +22,8 @@ If you want the project to run, install the requirements.txt package. For the fr
 -------------
 
 If you want more informations, please refer to the SA url below
+
+
 SA : https://www.notion.so/SA-7e7abfa330624a93a56a7628d7ab790d
 
 
