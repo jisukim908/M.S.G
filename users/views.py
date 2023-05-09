@@ -35,4 +35,3 @@ class UserLogoutView(APIView):
     def post(self, reqeuest):
         """로그아웃 기능입니다"""
         return Response({"message": "logout 요청입니다"})
-"""
