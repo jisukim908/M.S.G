@@ -7,7 +7,6 @@ class FollowView(APIView):
     def post(self, request, user_id):
         #follow기능을 담당
         pass
-
 class UserProfileView(APIView):
     def get(self, request):
         """서용자 정보를 response 합니다"""
@@ -20,7 +19,6 @@ class UserProfileView(APIView):
     def delete(self, request):
         """회원 삭제(비활성화)"""
         return Response({"message": "delete 요청입니다!"})
-
 
 class UserSignupView(APIView):
     def post(self, request):
@@ -37,3 +35,4 @@ class UserLogoutView(APIView):
     def post(self, reqeuest):
         """로그아웃 기능입니다"""
         return Response({"message": "logout 요청입니다"})
+"""
