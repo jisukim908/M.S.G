@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
 from .models import Feed, Comment
-from .serializers import FeedSerializer, CommentSerializer
+from .serializers import FeedSerializer, CommentSerializer, FeedListSerializer
 from rest_framework.response import Response
 from hitcount.views import HitCountDetailView
+from rest_framework import generics, filters
+
 
 class FeedListView(APIView):
     def get(self, request):
@@ -14,13 +16,13 @@ class FeedListView(APIView):
 
 class FeedDetailView(APIView, HitCountDetailView):
     # 조회수
-    model = Feed    
-    count_hit = True 
-    
+    model = Feed
+    count_hit = True
+
     # 탬플릿에서 조회수 나타내기
     # {# the total hits for the object #}
     # {{ hitcount.total_hits }}
-  
+
     def get(self, request, post_id):
         try:
             feed = Feed.objects.get(id=post_id)
@@ -29,7 +31,7 @@ class FeedDetailView(APIView, HitCountDetailView):
 
         serializer = FeedSerializer(feed)
         return Response(serializer.data)
-      
+
 
 class FeedCreateView(APIView):
     def post(self, request):
@@ -96,7 +98,7 @@ class CommentsLikeView(APIView):
 
 
 class CommentsDislikeView(APIView):
-    # 싫어요
+    # 싫어요 ㅠ
     def post(self, request, comment_id):
         try:
             comment = Comment.objects.get(id=comment_id)
@@ -107,3 +109,10 @@ class CommentsDislikeView(APIView):
         comment.save()
 
         return Response(status=204)
+
+
+class FeedSearchView(generics.ListCreateAPIView):
+    search_fields = ["title", "context"]
+    filter_backends = (filters.SearchFilter,)
+    queryset = Feed.objects.all()
+    serializer_class = FeedListSerializer

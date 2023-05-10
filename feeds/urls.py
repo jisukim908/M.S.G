@@ -6,6 +6,7 @@ from .views import (
     CommentsView,
     CommentsLikeView,
     CommentsDislikeView,
+    FeedSearchView,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
         CommentsDislikeView.as_view(),
         name="comment_dislike",
     ),
+    path("feed/search/", FeedSearchView.as_view(), name="feed_search"),
 ]
