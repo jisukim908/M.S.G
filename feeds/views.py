@@ -13,6 +13,9 @@ from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
+from users.serializers import TagSerializer
+from users.models import Tag
+
 
 class FeedListView(APIView, ListView):
     # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
@@ -115,12 +118,12 @@ class CommentsDislikeView(APIView):
 
 
 class FeedSearchView(generics.ListCreateAPIView):
-    search_fields = ["title", "context",]
-    filter_backends = (filters.SearchFilter,)
-    queryset = Feed.objects.all()
-    serializer_class = FeedListSerializer
-    
-    return Response(status=204)
+    def get(self):
+        search_fields = ["title", "context",]
+        filter_backends = (filters.SearchFilter,)
+        queryset = Feed.objects.all()
+        serializer_class = FeedListSerializer
+        return Response(status=204)
 
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
@@ -142,6 +145,8 @@ class FeedDetailView(APIView, HitCountDetailView):
 
 class FeedCreateView(APIView):
     # feed 만들기 기능. 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = FeedCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -153,6 +158,9 @@ class FeedCreateView(APIView):
 
 
 class FeedLikeView(APIView):
+    # feed 좋아요 기능 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.likes.all():
