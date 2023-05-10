@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 from feeds.models import Feed
 from feeds.serializers import FeedListSerializer, FeedDetailSerializer, FeedCreateSerializer
 from hitcount.views import HitCountDetailView
-# Create your views here.
 
 
 class ChannelsView(APIView):
