@@ -24,7 +24,6 @@ class FollowView(APIView):
             author.followings.add(user)
             return Response({"message":"팔로우"}, status=status.HTTP_200_OK)
 
-
 class UserProfileView(APIView):
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
@@ -53,7 +52,6 @@ class UserProfileView(APIView):
             return Response({"message": "탈퇴 처리"}, status=status.HTTP_200_OK)
         else:
             return Response({"message":"유저가 다릅니다."}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserSignupView(APIView):
     def post(self, request):

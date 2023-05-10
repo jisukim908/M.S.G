@@ -1,5 +1,5 @@
 from django.contrib import admin
-
-from feeds.models import Feed
+from .models import Feed, Comment
 
 admin.site.register(Feed)
+admin.site.register(Comment)
