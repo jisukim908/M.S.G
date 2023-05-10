@@ -13,8 +13,6 @@ from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-from users.serializers import TagSerializer
-from users.models import Tag
 
 
 class FeedListView(APIView, ListView):
@@ -118,13 +116,12 @@ class CommentsDislikeView(APIView):
 
 
 class FeedSearchView(generics.ListCreateAPIView):
-    def get(self):
-        search_fields = ["title", "context",]
-        filter_backends = (filters.SearchFilter,)
-        queryset = Feed.objects.all()
-        serializer_class = FeedListSerializer
-        return Response(status=204)
-
+    search_fields = ["title", "context",]
+    filter_backends = (filters.SearchFilter,)
+    queryset = Feed.objects.all()
+    serializer_class = FeedListSerializer
+    
+    
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
 
