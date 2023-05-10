@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,django,dotenv
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,django,dotenv
 
-secrets.json
+secret.json
 
 ### Django ###
 *.log
