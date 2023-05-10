@@ -39,7 +39,7 @@ class User(AbstractBaseUser):
         ('Man', 'Man'),
         ('Woman', 'Woman'),
         )
-    gender = models.CharField(choices=gender_check, max_length=1)
+    gender = models.CharField(choices=gender_check, max_length=5)
     age = models.CharField(max_length=20)
     profile_image = models.ImageField(null=True)
     bio = models.CharField(max_length=300, blank=True)
