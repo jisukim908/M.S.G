@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
-from feeds.models import Feed
-from feeds.serializers import FeedListSerializer, FeedCreateSerializer, FeedDetailSerializer
+from feeds.models import Feed, Comment
+from feeds.serializers import FeedListSerializer, FeedCreateSerializer, FeedDetailSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -19,22 +19,74 @@ class FeedListView(APIView, ListView):
         seriailizer = FeedListSerializer(feeds, many=True)
         return Response(seriailizer.data, status=status.HTTP_200_OK)
 
+
 class CommentsView(APIView):
     def get(self, request):
-        #댓글 가져오기
-        return Response({"message": "comment get 요청입니다!"})
-
+        # 댓글 가져오기
+        comments = Comment.objects.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+    
     def post(self, request):
-        #댓글 생성
-        return Response({"message": "comment post 요청입니다!"})
+        # 댓글 생성
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        else:
+            return Response(serializer.errors, status=400)
 
-    def update(self, request, comment_id):
-        #댓글 수정
-        return Response({"message": "comment update 요청입니다!"})
+    def put(self, request, comment_id):
+        # 댓글 수정
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except Comment.DoesNotExist:
+            return Response({"error": "댓글이 없습니다."}, status=404)
+
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=400)
 
     def delete(self, request, comment_id):
-        #댓글 삭제
-        return Response({"message": "comment delete 요청입니다!"})
+        # 댓글 삭제
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except Comment.DoesNotExist:
+            return Response({"error": "댓글이 없습니다."}, status=404)
+        comment.delete()
+        return Response({"message": "삭제되었습니다."}, status=204)
+
+
+class CommentsLikeView(APIView):
+    # 좋아요
+    def post(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except Comment.DoesNotExist:
+            return Response({"error": "댓글이 없습니다."}, status=404)
+
+        comment.like_count += 1
+        comment.save()
+        return Response(status=204)
+
+
+class CommentsDislikeView(APIView):
+    # 싫어요
+    def post(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except Comment.DoesNotExist:
+            return Response({"error": "댓글이 없습니다."}, status=404)
+
+        comment.dislike_count += 1
+        comment.save()
+
+
+
+
 
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
@@ -42,7 +94,7 @@ class FeedDetailView(APIView, HitCountDetailView):
     # 조회수
     model = Feed    
     count_hit = True 
-
+    
     # 탬플릿에서 조회수 나타내기
     # {# the total hits for the object #}
     # {{ hitcount.total_hits }}
@@ -62,28 +114,10 @@ class FeedCreateView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def put(self, request, feed_id):
-    #     feed = get_object_or_404(Feed, id=feed_id)
-    #     if request.user == feed.user:
-    #         serializer = FeedCreateSerializer(feed, data=serializer.data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #             return Response(serializer.data, status=status.HTTP_200_OK)
-    #         else:
-    #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #     else:
-    #         return Response("수정 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
-
-    # def delete(self, request, feed_id):
-    #     feed = get_object_or_404(Feed, id=feed_id)
-    #     if request.user == feed.user:
-    #         feed.delete()
-    #         return Response("게시글이 삭제되었습니다", status=status.HTTP_204_NO_CONTENT)
-    #     else:
-    #         return Response("삭제 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
 
 
-class LikeView(APIView):
+
+class FeedLikeView(APIView):
     def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.likes.all():
