@@ -7,7 +7,7 @@ class Feed(models.Model, HitCountMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author")
     title = models.CharField(max_length=100)
     context = models.TextField(blank=True)
-    image = models.ImageField(blank=True,upload_to="/photo/%Y/%m/%d")
+    image = models.ImageField(blank=True,upload_to="photo/%Y/%m/%d")
     video = models.FileField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
