@@ -53,8 +53,7 @@ class FeedDetailView(APIView, HitCountDetailView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FeedCreateView(APIView):
-    # feed 만들기, 지우기 기능. 
-    # SA에 channel에서 수정 기능 구현으로 되어있어 일단 주석 처리
+    # feed 만들기 기능. 
     def post(self, request):
         serializer = FeedCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -63,7 +62,7 @@ class FeedCreateView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def update(self, request, feed_id):
+    # def put(self, request, feed_id):
     #     feed = get_object_or_404(Feed, id=feed_id)
     #     if request.user == feed.user:
     #         serializer = FeedCreateSerializer(feed, data=serializer.data)
@@ -75,13 +74,13 @@ class FeedCreateView(APIView):
     #     else:
     #         return Response("수정 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
 
-    def delete(self, request, feed_id):
-        feed = get_object_or_404(Feed, id=feed_id)
-        if request.user == feed.user:
-            feed.delete()
-            return Response("게시글이 삭제되었습니다", status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response("삭제 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
+    # def delete(self, request, feed_id):
+    #     feed = get_object_or_404(Feed, id=feed_id)
+    #     if request.user == feed.user:
+    #         feed.delete()
+    #         return Response("게시글이 삭제되었습니다", status=status.HTTP_204_NO_CONTENT)
+    #     else:
+    #         return Response("삭제 권한이 없습니다", status=status.HTTP_403_FORBIDDEN)
 
 
 class LikeView(APIView):

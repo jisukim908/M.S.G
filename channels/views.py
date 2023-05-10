@@ -18,7 +18,7 @@ class ChannelsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-class ChannelAdminView(HitCountDetailView):
+class ChannelAdminView(APIView, HitCountDetailView):
     # 조회수
     model = Feed
     # template_name = 'feed/detail.html'    
