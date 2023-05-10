@@ -1,17 +1,23 @@
 from rest_framework.views import APIView
 from feeds.models import Feed, Comment
-from feeds.serializers import FeedListSerializer, FeedCreateSerializer, FeedDetailSerializer, CommentSerializer
+from feeds.serializers import (
+    FeedListSerializer,
+    FeedCreateSerializer,
+    FeedDetailSerializer,
+    CommentSerializer,
+)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
+from rest_framework.permissions import IsAuthenticated
 
 
 class FeedListView(APIView, ListView):
     # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
-    model = Feed    
-    count_hit = True 
+    model = Feed
+    count_hit = True
     paginate_by = 12
 
     def get(self, request):
@@ -21,18 +27,28 @@ class FeedListView(APIView, ListView):
         return Response(seriailizer.data, status=status.HTTP_200_OK)
 
 
+class FeedCommentsView(APIView):
+    def get(self, request, feed_id):
+        # 해당 게시글 댓글 가져옴
+        comments = Comment.objects.filter(feed__id=feed_id)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+
 class CommentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         # 댓글 가져오기
         comments = Comment.objects.all()
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
         # 댓글 생성
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=201)
         else:
             return Response(serializer.errors, status=400)
@@ -43,6 +59,9 @@ class CommentsView(APIView):
             comment = Comment.objects.get(id=comment_id)
         except Comment.DoesNotExist:
             return Response({"error": "댓글이 없습니다."}, status=404)
+
+        if comment.user != request.user:
+            return Response({"error": "댓글 작성자만 수정할 수 있습니다."}, status=403)
 
         serializer = CommentSerializer(comment, data=request.data)
         if serializer.is_valid():
@@ -57,11 +76,17 @@ class CommentsView(APIView):
             comment = Comment.objects.get(id=comment_id)
         except Comment.DoesNotExist:
             return Response({"error": "댓글이 없습니다."}, status=404)
+
+        if comment.user != request.user:
+            return Response({"error": "댓글 작성자만 삭제할 수 있습니다."}, status=403)
+
         comment.delete()
         return Response({"message": "삭제되었습니다."}, status=204)
 
 
 class CommentsLikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     # 좋아요
     def post(self, request, comment_id):
         try:
@@ -75,6 +100,8 @@ class CommentsLikeView(APIView):
 
 
 class CommentsDislikeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     # 싫어요
     def post(self, request, comment_id):
         try:
@@ -84,9 +111,7 @@ class CommentsDislikeView(APIView):
 
         comment.dislike_count += 1
         comment.save()
-
-
-
+        return Response(status=204)
 
 
 class FeedDetailView(APIView, HitCountDetailView):
