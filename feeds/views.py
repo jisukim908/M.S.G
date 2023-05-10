@@ -15,7 +15,8 @@ class FeedListView(APIView, ListView):
     paginate_by = 12
 
     def get(self, request):
-        feeds = Feed.objects.all().order_by("-created_at")
+        ### -created_at 이 아니라 created_date 로 수정해주어야 함!!
+        feeds = Feed.objects.all().order_by("-created_date")
         seriailizer = FeedListSerializer(feeds, many=True)
         return Response(seriailizer.data, status=status.HTTP_200_OK)
 
@@ -98,8 +99,9 @@ class FeedDetailView(APIView, HitCountDetailView):
     # 탬플릿에서 조회수 나타내기
     # {# the total hits for the object #}
     # {{ hitcount.total_hits }}
-
-    def get(self, request, feed_id):
+    
+    ### authonr_id 추가해주어야함!!
+    def get(self, request, author_id, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
         return Response(serializer.data, status=status.HTTP_200_OK)
