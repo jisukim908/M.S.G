@@ -120,8 +120,6 @@ class FeedSearchView(generics.ListCreateAPIView):
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer
     
-    return Response(status=204)
-
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
 
