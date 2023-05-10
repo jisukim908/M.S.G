@@ -1,25 +1,21 @@
-from feeds.models import Feed
 from rest_framework import serializers
+from .models import Feed, Comment
 
-class FeedDetailSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    # comments_count = serializers.SerializerMethodField()
-    likes_count = serializers.SerializerMethodField()
 
-    def get_user(self, obj):
-        return obj.user.email  #Feed, author의 email값
-
-    # def get_comments_count(self, obj):
-    #     return obj.comments.count()
-
+class CommentSerializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):
         return obj.likes.count()
 
     class Meta:
-        model = Feed
-        fields = ['title','context', 'image','video', 'created_at', 'updated_at', 'user', "comments_count", "likes_count",]
+        model = Comment
+        fields = ["id", "feed", "text", "created_at", "updated_at", "likes", "dislikes"]
 
 
+class FeedSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
+    likes_count = serializers.SerializerMethodField()
+
+    
 class FeedListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
@@ -28,5 +24,19 @@ class FeedListSerializer(serializers.ModelSerializer):
 class FeedCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ['title','context', 'image','video',]
+        fields = [
+            "id",
+            "title",
+            "content",
+            "image",
+            "video",
+            "created_at",
+            "updated_at",
+            "likes",
+            "comments",
+            "likes_count",
+        ]
+        read_only_fields = ["likes", "comments", "likes_count"]
 
+    def get_likes_count(self, obj):
+        return obj.likes.count()
