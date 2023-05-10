@@ -4,9 +4,7 @@ from hitcount.models import HitCountMixin, HitCount
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
 
-    
 class Feed(models.Model, HitCountMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author")
     title = models.CharField(max_length=100)
@@ -24,8 +22,10 @@ class Feed(models.Model, HitCountMixin):
     )
 
     def __str__(self):
-        return self.text
+        return self.title
+    
 
+User = get_user_model()
 
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, related_name="comments", on_delete=models.CASCADE)
@@ -34,3 +34,6 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.text
