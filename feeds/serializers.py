@@ -47,4 +47,5 @@ class FeedListSerializer(serializers.ModelSerializer):
 class FeedCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ["title", 'context','image','video',]
+        fields = ["title", 'context','image', 'video_key',]
+        extra_kwargs = {'likes': {'read_only' : True}}
