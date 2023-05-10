@@ -90,10 +90,11 @@ class CommentsDislikeView(APIView):
 
 
 class FeedSearchView(generics.ListCreateAPIView):
-    search_fields = ["title", "context"]
+    search_fields = ["title", "context",]
     filter_backends = (filters.SearchFilter,)
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer
+
 
 
 
