@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 
 
 class Feed(models.Model, HitCountMixin):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author"
+    )
     title = models.CharField(max_length=100)
     context = models.TextField(blank=True)
     image = models.ImageField(blank=True,upload_to="media/photo/%Y/%m/%d", default="defalut_image.jpg")
@@ -20,8 +22,9 @@ class Feed(models.Model, HitCountMixin):
 
     # 조회수별 정렬
     hit_count_generic = GenericRelation(
-        HitCount, object_id_field='object_pk',
-        related_query_name='hit_count_generic_relation'
+        HitCount,
+        object_id_field="object_pk",
+        related_query_name="hit_count_generic_relation",
     )
 
     def __str__(self):
