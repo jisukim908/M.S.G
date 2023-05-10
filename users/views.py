@@ -1,37 +1,78 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+)
+from rest_framework import status
+from users.serializers import (
+    MyTokenObtainPairSerializer, UserSerializer, TagSerializer, UserViewSerializer
+)
+from users.models import Tag, User
 
-
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class FollowView(APIView):
     def post(self, request, user_id):
-        #follow기능을 담당
-        pass
-class UserProfileView(APIView):
-    def get(self, request):
-        """서용자 정보를 response 합니다"""
-        return Response({"message": "get 요청입니다!"})
-    
-    def put(self, request):
-        """회원 정보를 수정합니다"""
-        return Response({"message": "put 요청입니다!"})
+        author = get_object_or_404(User, pk=user_id)
+        user = request.user
+        if user in author.followings.all():
+            author.followings.remove(user)
+            return Response({"message":"팔로우 취소"}, status=status.HTTP_200_OK)
+        else:
+            author.followings.add(user)
+            return Response({"message":"팔로우"}, status=status.HTTP_200_OK)
 
-    def delete(self, request):
+class UserProfileView(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        serializer = UserViewSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, user_id):
+        """회원 정보를 수정합니다"""
+        user = get_object_or_404(User, pk=user_id)
+        if user == request.user:
+            serializer = UserSerializer(user, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message":"유저가 다릅니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, user_id):
         """회원 삭제(비활성화)"""
-        return Response({"message": "delete 요청입니다!"})
+        user = get_object_or_404(User, pk=user_id)
+        if user == request.user:
+            user.is_active = False
+            user.save()
+            return Response({"message": "탈퇴 처리"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message":"유저가 다릅니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserSignupView(APIView):
     def post(self, request):
-        """서용자 정보를 입력받아 회원가입을 진행합니다"""
-        return Response({"message": "post 요청입니다!"})
-
-class UserLoginView(APIView):
-    def post(self, reqeuest):
-        """로그인 기능입니다"""
-        return Response({"message": "login 요청입니다"})
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "post 요청, 가입완료"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message":f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogoutView(APIView):
-    def post(self, reqeuest):
+    def post(self, request):
         """로그아웃 기능입니다"""
-        return Response({"message": "logout 요청입니다"})
+        response = Response({"message": "로그아웃 완료"}, status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie("access")
+        response.delete_cookie("refresh")
+        return response
+
+class TagView(APIView):
+    def get(self, request):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
