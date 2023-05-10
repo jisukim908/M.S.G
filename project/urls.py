@@ -23,5 +23,4 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('', include('feeds.urls')),
     path('channel/', include('channels.urls')),
-
 ]
