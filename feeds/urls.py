@@ -18,6 +18,10 @@ urlpatterns = [
     path(
         "comments/<int:comment_id>/dislike/",
         views.CommentsDislikeView.as_view(),
-        name="comment_dislike",
-    ),
+        name="comment_dislike",),
+    path(
+        "<int:feed_id>/comments/",
+        views.FeedCommentsView.as_view(),
+        name="feed_comments",),
 ]
+
