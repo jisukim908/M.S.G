@@ -4,6 +4,8 @@ from hitcount.models import HitCountMixin, HitCount
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+
+
 class Feed(models.Model, HitCountMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author")
     title = models.CharField(max_length=100)
