@@ -48,3 +48,9 @@ class FeedCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = ["title", 'context','image','video',]
+        
+        
+        
+
+
+

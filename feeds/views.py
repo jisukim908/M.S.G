@@ -11,8 +11,8 @@ from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
+from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-
 
 class FeedListView(APIView, ListView):
     # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
@@ -113,6 +113,14 @@ class CommentsDislikeView(APIView):
         comment.save()
         return Response(status=204)
 
+
+class FeedSearchView(generics.ListCreateAPIView):
+    search_fields = ["title", "context",]
+    filter_backends = (filters.SearchFilter,)
+    queryset = Feed.objects.all()
+    serializer_class = FeedListSerializer
+    
+    return Response(status=204)
 
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
