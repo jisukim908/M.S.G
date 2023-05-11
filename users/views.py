@@ -34,15 +34,31 @@ class UserProfileView(APIView):
     def put(self, request, user_id):
         """회원 정보를 수정합니다"""
         user = get_object_or_404(User, pk=user_id)
+        print(user, type(user))
+        print(request.user, type(request.user))
         if user == request.user:
             serializer = UserSerializer(user, data=request.data)
             if serializer.is_valid():
+                tags = []
+                for tag_id in request.data.get('tags'):
+                    tag = Tag.objects.get(pk=tag_id)
+                    tags.append(tag)
+                user.tags.set(tags)
+
+                if request.data.get("followings") != None:
+                    followings = []
+                    for following_id in request.data.get('followings'):
+                        following = User.objects.get(pk=following_id)
+                        followings.append(following)
+                    user.followings.set(followings)
+                else:
+                    pass
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"message":"유저가 다릅니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message":"유저가 다릅니다."}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, user_id):
         """회원 삭제(비활성화)"""
