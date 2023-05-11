@@ -24,6 +24,7 @@ class FollowView(APIView):
             author.followings.add(user)
             return Response({"message":"팔로우"}, status=status.HTTP_200_OK)
 
+
 class UserProfileView(APIView):
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
