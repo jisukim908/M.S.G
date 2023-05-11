@@ -36,6 +36,19 @@ class UserProfileView(APIView):
         user = get_object_or_404(User, pk=user_id)
         if user == request.user:
             serializer = UserSerializer(user, data=request.data)
+
+            tags = []
+            for tag_id in request.data.get('tags'):
+                tag = Tag.objects.get(pk=tag_id)
+                tags.append(tag)
+            user.tags.set(tags)
+
+            followings = []
+            for following_id in request.data.get('followings'):
+                following = User.objects.get(pk=following_id)
+                followings.append(following)
+            user.followings.set(followings)
+
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
