@@ -14,6 +14,7 @@ from django.views.generic import ListView
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
 
+
 class FeedListView(APIView, ListView):
     # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
     model = Feed
@@ -120,6 +121,7 @@ class FeedSearchView(generics.ListCreateAPIView):
     queryset = Feed.objects.all()
     serializer_class = FeedListSerializer
     
+    
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
 
@@ -140,6 +142,8 @@ class FeedDetailView(APIView, HitCountDetailView):
 
 class FeedCreateView(APIView):
     # feed 만들기 기능. 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = FeedCreateSerializer(data=request.data)
         if serializer.is_valid():
@@ -151,6 +155,9 @@ class FeedCreateView(APIView):
 
 
 class FeedLikeView(APIView):
+    # feed 좋아요 기능 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.likes.all():

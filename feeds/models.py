@@ -10,14 +10,14 @@ class Feed(models.Model, HitCountMixin):
     )
     title = models.CharField(max_length=100)
     context = models.TextField(blank=True)
-    image = models.ImageField(blank=True,upload_to="media/photo/%Y/%m/%d", default="defalut_image.jpg")
+    image = models.ImageField(blank=True,upload_to="media/photo/%Y/%m/%d", default="static/default_image.jpg")
     
     #video key를 youtube에서 받아와 재생하는 방식으로 변경
-    video_key = models.CharField(max_length=20, help_text="https://www.youtube.com/watch?v= 뒤의 key를 입력하세요")
+    video_key = models.CharField(max_length=20, null=True,help_text="https://www.youtube.com/watch?v= 뒤의 key를 입력하세요")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, default=0, related_name="likes_feed")
-    
+    tag = models.ManyToManyField('users.Tag', verbose_name = "tag", blank=False)
 
     # 조회수별 정렬
     hit_count_generic = GenericRelation(
