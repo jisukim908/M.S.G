@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from users.models import User, Tag
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView
-)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,14 +24,6 @@ class UserViewSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        instance.profile_image = validated_data.get('profile_image', instance.profile_image)
-        instance.bio = validated_data.get('bio', instance.bio)
-        instance.tags = validated_data.get('tags', instance.tags)
-        instance.followings = validated_data.get('followings', instance.followings)
-        instance.save()
-        return instance
     
 # 회원가입
 class UserSerializer(serializers.ModelSerializer):
@@ -52,15 +42,13 @@ class UserSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', instance.username)
         instance.profile_image = validated_data.get('profile_image', instance.profile_image)
         instance.bio = validated_data.get('bio', instance.bio)
-        instance.tags = validated_data.get('tags', instance.tags)
-        instance.followings = validated_data.get('followings', instance.followings)
         instance.save()
         return instance
 
-class MyTokenObtainPairSerializer(TokenObtainPairView):
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['email'] = user.email
+
         return token
     

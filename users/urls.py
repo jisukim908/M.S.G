@@ -7,7 +7,7 @@ from users import views
 
 urlpatterns = [
     # 로그인
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     # 토큰 재발행
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # 회원가입
