@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from users.models import User, Tag
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView
-)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,11 +45,10 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class MyTokenObtainPairSerializer(TokenObtainPairView):
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['email'] = user.email
-        token['password'] = user.password
+
         return token
     

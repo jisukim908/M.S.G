@@ -42,7 +42,7 @@ class User(AbstractBaseUser):
     joined_at = models.DateTimeField(auto_now_add=True)
     profile_image = models.ImageField(blank=True)
     bio = models.TextField(blank=True)
-    tags = models.ManyToManyField("Tag", verbose_name="태그", blank=True)
+    tags = models.ManyToManyField("Tag", verbose_name="태그", blank=False)
 
     followings = models.ManyToManyField("self", symmetrical=False, related_name='followers', blank=True)
 
