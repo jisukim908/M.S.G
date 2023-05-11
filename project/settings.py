@@ -210,9 +210,5 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')] # 개발단계
-STATIC_ROOT = os.path.join(BASE_DIR,'static') # 배포단계
-
-MEDIA_URL = '/static/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'static/media')
+# STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')] # 개발단계
+# STATIC_ROOT = os.path.join(BASE_DIR,'static') # 배포단계
