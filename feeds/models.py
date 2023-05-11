@@ -34,6 +34,10 @@ User = get_user_model()
 
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, related_name="comments", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comment_user"
+    )
+
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
