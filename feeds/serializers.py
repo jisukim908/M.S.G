@@ -10,8 +10,6 @@ class FeedDetailSerializer(serializers.ModelSerializer):
     # feed작성한 user channel 정보 가져오기
     # tag 게시글에 추가하기
     # 인기 순 혹은 관련된 게시글 목록 가져오기
-
-    #### class Meta가 빠짐! 그래서 추가함
     class Meta:
         model = Feed
         exclude = ("id",)
@@ -45,7 +43,8 @@ class FeedListSerializer(serializers.ModelSerializer):
         fields = ['title', 'image', 'user',]
 
 class FeedCreateSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key',]
+        fields = ["title", 'context','image', 'video_key', 'tag',]
         extra_kwargs = {'likes': {'read_only' : True}}
