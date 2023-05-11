@@ -20,4 +20,10 @@ urlpatterns = [
         views.CommentsDislikeView.as_view(),
         name="comment_dislike",
     ),
+    path("search/", views.FeedSearchView.as_view(), name="feed_search"),
+    path(
+        "<int:feed_id>/comments/",
+        views.FeedCommentsView.as_view(),
+        name="feed_comments",),
 ]
+
