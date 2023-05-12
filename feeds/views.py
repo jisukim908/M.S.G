@@ -22,7 +22,6 @@ class FeedListView(APIView, ListView):
     paginate_by = 12
 
     def get(self, request):
-        ### -created_at 이 아니라 created_date 로 수정해주어야 함!!
         feeds = Feed.objects.all().order_by("-created_date")
         seriailizer = FeedListSerializer(feeds, many=True)
         return Response(seriailizer.data, status=status.HTTP_200_OK)
@@ -133,7 +132,6 @@ class FeedDetailView(APIView, HitCountDetailView):
     # {# the total hits for the object #}
     # {{ hitcount.total_hits }}
     
-    ### authonr_id 추가해주어야함!!
     def get(self, request, author_id, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
