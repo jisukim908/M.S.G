@@ -31,7 +31,6 @@ class FollowView(APIView):
             author.followings.add(user)
             return Response({"message":"팔로우"}, status=status.HTTP_200_OK)
 
-
 class UserProfileView(APIView):
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
@@ -103,7 +102,6 @@ class TagView(APIView):
     
 class UserActivate(APIView):
     permission_classes = [AllowAny]
-
     def get(self, request, uidb64, token):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
