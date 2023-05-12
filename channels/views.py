@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.shortcuts import render, redirect
 from feeds.models import Feed
 from users.models import User
-from feeds.serializers import FeedListSerializer, FeedDetailSerializer, FeedCreateSerializer
+from feeds.serializers import FeedDetailSerializer, FeedCreateSerializer
 from channels.serializers import ChannelViewSerializer
 from hitcount.views import HitCountDetailView
 
@@ -23,14 +23,13 @@ class ChannelsView(APIView):
         # 개인 채널의 간단 정보, 개인의 전체 동영상 보기, 
         # 로그인 없이 볼 수 있음, 로그인되어있을 시, 구독 표시 있기 => 이건 프론트에서 구현해야할 듯
         feeds = Feed.objects.filter(user_id=user_id)
-        serializer = FeedListSerializer(feeds, many=True)
+        serializer = FeedDetailSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class ChannelAdminView(APIView, HitCountDetailView):
     # 조회수
-    model = Feed
-    # template_name = 'feed/detail.html'    
+    model = Feed   
     count_hit = True 
     context_object_name = 'my_admin_feed'
 
@@ -54,12 +53,9 @@ class ChannelAdminView(APIView, HitCountDetailView):
         #한 게시글에 대한 좋아요 수와 조회수를 확인할 수 있다.
         permission_classes = [permissions.IsAuthenticated]
         feeds = Feed.objects.filter(id = feed_id)
-        if request.user.id == user_id:
-            serializer = FeedDetailSerializer(feeds, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
-
+        serializer = FeedDetailSerializer(feeds, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
     # 관리페이지 안에서 수정
     def put(self, request, user_id, feed_id):
         permission_classes = [permissions.IsAuthenticated]
