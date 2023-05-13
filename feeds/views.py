@@ -5,6 +5,7 @@ from feeds.serializers import (
     FeedCreateSerializer,
     FeedDetailSerializer,
     CommentSerializer,
+    FeedSearchSerializer
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,9 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class FeedListView(APIView, ListView):
-    # 게시글마다 각각의 조회수가 필요할 것 같아 추가해뒀습니다
     model = Feed
-    count_hit = True
     paginate_by = 12
 
     def get(self, request):
@@ -120,7 +119,7 @@ class FeedSearchView(generics.ListCreateAPIView):
     search_fields = ["title", "context", "tag__name"]
     filter_backends = (filters.SearchFilter,)
     queryset = Feed.objects.all()
-    serializer_class = FeedListSerializer
+    serializer_class = FeedSearchSerializer
     
     
 class FeedDetailView(APIView, HitCountDetailView):
@@ -128,17 +127,18 @@ class FeedDetailView(APIView, HitCountDetailView):
 
     # 조회수
     model = Feed    
-    count_hit = True 
-    
-    # 탬플릿에서 조회수 나타내기
-    # {# the total hits for the object #}
-    # {{ hitcount.total_hits }}
     
     ### authonr_id 추가해주어야함!!
     def get(self, request, author_id, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # feed 조회수 기능
+    def post(self, request, author_id, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        feed.click
+        return Response("조회수 +1", status=status.HTTP_200_OK)
 
 
 class FeedCreateView(APIView):

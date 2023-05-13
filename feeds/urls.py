@@ -26,6 +26,6 @@ urlpatterns = [
     path(
         "<int:feed_id>/comments/",
         views.FeedCommentsView.as_view(),
-        name="feed_comments",),
+        name="feed_comments"),
 ]
 

@@ -14,10 +14,15 @@ class FeedDetailSerializer(serializers.ModelSerializer):
     # 인기 순 혹은 관련된 게시글 목록 가져오기
     class Meta:
         model = Feed
-        exclude = ("id",)
+        fields = '__all__'
+        extra_kwargs = {'id' : {'read_only' : True},
+                        'user' : {'read_only' : True},
+                        'created_at' : {'read_only' : True},
+                        'updated_at' : {'read_only' : True},
+                        'likes': {'read_only' : True}}
     
     def get_user(self, obj):
-        return obj.user.email  #Feed, author의 email값
+        return obj.user.username  #Feed, author의 email값
 
     def get_comments_count(self, obj):
         return obj.comments.count()
@@ -40,7 +45,7 @@ class FeedListSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username  #feed작성한 username값
-
+    
     class Meta:
         model = Feed
         fields = ['title', 'image', 'user', 'video_key', 'tag']
@@ -51,3 +56,8 @@ class FeedCreateSerializer(serializers.ModelSerializer):
         model = Feed
         fields = ["title", 'context','image', 'video_key', 'tag']
         extra_kwargs = {'likes': {'read_only' : True}}
+
+class FeedSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feed
+        fields = ["title","context",]
