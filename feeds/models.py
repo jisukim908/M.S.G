@@ -16,7 +16,7 @@ class Feed(models.Model, HitCountMixin):
     video_key = models.CharField(max_length=100, blank=True, null=True, help_text="https://www.youtube.com/watch?v= 뒤의 key를 입력하세요")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, default=0, related_name="likes_feed", null=True)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, through='Like', related_name="like_feeds")
     tag = models.ManyToManyField('users.Tag', verbose_name = "tag", blank=False)
     hits = models.PositiveIntegerField(default = 0, verbose_name = "hitcount")
 
@@ -28,7 +28,16 @@ class Feed(models.Model, HitCountMixin):
 
     def __str__(self):
         return self.title
-    
+
+#user, feed 양쪽을 참조하는 Like.
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    feed = models.ForeignKey(Feed, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'likes'
+
 
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, related_name="comments", on_delete=models.CASCADE)
