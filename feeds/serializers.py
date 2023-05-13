@@ -51,8 +51,6 @@ class FeedListSerializer(serializers.ModelSerializer):
         fields = ['title', 'image', 'user', 'tag',]
 
 class FeedCreateSerializer(serializers.ModelSerializer):
-    likes = serializers.PrimaryKeyRelatedField(many=True, defalut=[])
-
     class Meta:
         model = Feed
         fields = ["title", 'context','image', 'video_key', 'tag',]
