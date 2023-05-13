@@ -26,31 +26,20 @@ class ChannelsView(APIView):
         serializer = FeedDetailSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    # feed 조회수 기능
+    def post(self, request, author_id, feed_id):
+        feed = get_object_or_404(Feed, id=feed_id)
+        feed.click
+        return Response("조회수 +1", status=status.HTTP_200_OK)
+    
 
 class ChannelAdminView(APIView, HitCountDetailView):
-    # 조회수
     model = Feed   
-    count_hit = True 
-    context_object_name = 'my_admin_feed'
-
-    def get_context_data(self, **kwargs):
-        context =  super(FeedDetailSerializer, self).get_context_data(**kwargs)
-        # 조회수 높은 10개 게시글 정렬
-        context['popular_feeds'] = Feed.objects.order_by('-hit_count_generic_hits')[:10]
-
-        # 7일 간 조회수를 5개를 정렬
-        context['feeds_hit'] = Feed.objects.order_by('-hit_count.hits_in_last(days=7)')[:5]
-        # context.update({
-        #     'feeds_hit' : Feed.objects.order_by('-hit_count.hits_in_last(days=7)')[:5],
-        # })
-        
-        return context
 
     # 채널 피드 자세히 보기
     def get(self, request, user_id, feed_id):
         #개인 채널 관리 뷰
-        #업로드한 동영상 또는 게시글 확인할 수 있고,
-        #한 게시글에 대한 좋아요 수와 조회수를 확인할 수 있다.
+        #업로드한 동영상 또는 게시글 확인할 수 있음
         permission_classes = [permissions.IsAuthenticated]
         feeds = Feed.objects.filter(id = feed_id)
         serializer = FeedDetailSerializer(feeds, many=True)
