@@ -5,6 +5,7 @@ from feeds.serializers import (
     FeedCreateSerializer,
     FeedDetailSerializer,
     CommentSerializer,
+    FeedSearchSerializer
 )
 from rest_framework.response import Response
 from rest_framework import status
@@ -116,7 +117,7 @@ class FeedSearchView(generics.ListCreateAPIView):
     search_fields = ["title", "context",]
     filter_backends = (filters.SearchFilter,)
     queryset = Feed.objects.all()
-    serializer_class = FeedListSerializer
+    serializer_class = FeedSearchSerializer
     
     
 class FeedDetailView(APIView, HitCountDetailView):
