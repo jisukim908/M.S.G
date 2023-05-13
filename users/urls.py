@@ -5,6 +5,8 @@ from rest_framework_simplejwt.views import (
 from django.urls import path
 from users import views
 
+app_name = 'users'
+
 urlpatterns = [
     # 로그인
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -19,5 +21,8 @@ urlpatterns = [
     # 유저 프로필 api
     path('profile/<int:user_id>/', views.UserProfileView.as_view(), name="user_profile"),
     # 팔로우
-    path('follow/<int:user_id>/', views.FollowView.as_view(), name='follow_view')
+    path('follow/<int:user_id>/', views.FollowView.as_view(), name='follow_view'),
+    # 이메일 인증
+    path('activate/<slug:uidb64>/<slug:token>/', views.UserActivate.as_view(), name="activate"),
+    path('success/', views.active_success, name='success'),
 ]
