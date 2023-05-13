@@ -18,19 +18,17 @@ class Feed(models.Model, HitCountMixin):
     updated_date = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, default=0, related_name="likes_feed")
     tag = models.ManyToManyField('users.Tag', verbose_name = "tag", blank=False)
+    hits = models.PositiveIntegerField(default = 0, verbose_name = "hitcount")
 
-    # 조회수별 정렬
-    hit_count_generic = GenericRelation(
-        HitCount,
-        object_id_field="object_pk",
-        related_query_name="hit_count_generic_relation",
-    )
+    # 조회수 코드
+    @property
+    def click(self):
+        self.hits +=1
+        self.save()
 
     def __str__(self):
         return self.title
     
-
-User = get_user_model()
 
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, related_name="comments", on_delete=models.CASCADE)
