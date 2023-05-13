@@ -121,7 +121,6 @@ class FeedSearchView(generics.ListCreateAPIView):
     
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
-
     # 조회수
     model = Feed    
     

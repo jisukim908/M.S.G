@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from hitcount.models import HitCountMixin, HitCount
 from django.conf import settings
+from users.models import User
 
 class Feed(models.Model, HitCountMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author")
@@ -13,7 +14,7 @@ class Feed(models.Model, HitCountMixin):
     video_key = models.CharField(max_length=100, blank=True, null=True, help_text="https://www.youtube.com/watch?v= 뒤의 key를 입력하세요")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, default=[], through='Like', related_name="likes_feed")
+    likes = models.ManyToManyField('users.User', blank=True, default=[], through='Like')
     tag = models.ManyToManyField('users.Tag', verbose_name = "tag", blank=False)
     hits = models.PositiveIntegerField(default = 0, verbose_name = "hitcount")
 
@@ -28,11 +29,8 @@ class Feed(models.Model, HitCountMixin):
 
 #user, feed 양쪽을 참조하는 Like.
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, null=True)
-
-    class Meta:
-        db_table = 'likes'
 
 
 class Comment(models.Model):

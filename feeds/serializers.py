@@ -19,7 +19,7 @@ class FeedDetailSerializer(serializers.ModelSerializer):
                         'user' : {'read_only' : True},
                         'created_at' : {'read_only' : True},
                         'updated_at' : {'read_only' : True},
-                        'likes': {'read_only' : True}}
+                        }
     
     def get_user(self, obj):
         return obj.user.username  #Feed, author의 username값
@@ -28,7 +28,7 @@ class FeedDetailSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
     def get_likes_count(self, obj):
-        return obj.likes.count()
+        return 0 #obj.likes.count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -48,9 +48,9 @@ class FeedListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ['title', 'image', 'user', 'tag',]
+        fields = ['id','title', 'image', 'user', 'tag', 'video_key',]
 
 class FeedCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key', 'tag',]
+        fields = ["title", 'context','image', 'video_key', 'tag', 'likes',]
