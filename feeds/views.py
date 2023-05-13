@@ -14,7 +14,7 @@ from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-
+from feeds.models import Like
 
 class FeedListView(APIView, ListView):
     model = Feed
@@ -122,7 +122,6 @@ class FeedSearchView(generics.ListCreateAPIView):
     
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
-
     # 조회수
     model = Feed    
     
@@ -159,8 +158,11 @@ class FeedLikeView(APIView):
     def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.likes.all():
-            feed.likes.remove(request.user) # like 요청 유저가 없으면 제거
+            #like 요청 유저가 있으면 삭제
+            Like.objects.delete(user_id=request.user.id, feed_id=feed_id)
             return Response("좋아요", status=status.HTTP_200_OK)
         else:
-            feed.likes.add(request.user) #like 요청 유저가 없으면 추가
+            #like 요청 유저가 없으면 추가
+            Like.objects.create(user_id=request.user.id, feed_id=feed_id)
             return Response("좋아요 취소!", status=status.HTTP_200_OK)
+
