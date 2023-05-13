@@ -23,17 +23,8 @@ class FeedListView(APIView, ListView):
     def get(self, request):
         ### -created_at 이 아니라 created_date 로 수정해주어야 함!!
         feeds = Feed.objects.all().order_by("-created_date")
-        seriailizer = FeedListSerializer(feeds, many=True)
-        return Response(seriailizer.data, status=status.HTTP_200_OK)
-
-
-class FeedCommentsView(APIView):
-    def get(self, request, feed_id):
-        # 해당 게시글 댓글 가져옴
-        comments = Comment.objects.filter(feed__id=feed_id)
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
-
+        serializer = FeedListSerializer(feeds, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CommentsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -129,13 +120,13 @@ class FeedDetailView(APIView, HitCountDetailView):
     model = Feed    
     
     ### authonr_id 추가해주어야함!!
-    def get(self, request, author_id, feed_id):
+    def get(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # feed 조회수 기능
-    def post(self, request, author_id, feed_id):
+    def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         feed.click
         return Response("조회수 +1", status=status.HTTP_200_OK)
