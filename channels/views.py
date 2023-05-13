@@ -26,12 +26,6 @@ class ChannelsView(APIView):
         serializer = FeedDetailSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    # feed 조회수 기능
-    def post(self, request, author_id, feed_id):
-        feed = get_object_or_404(Feed, id=feed_id)
-        feed.click
-        return Response("조회수 +1", status=status.HTTP_200_OK)
-    
 
 class ChannelAdminView(APIView, HitCountDetailView):
     model = Feed   
