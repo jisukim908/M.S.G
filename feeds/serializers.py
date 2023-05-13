@@ -1,10 +1,12 @@
 from rest_framework import serializers
 from feeds.models import Feed, Comment
+from users.serializers import TagSerializer
 
 class FeedDetailSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    tag = TagSerializer(many=True)
 
     """해당 serializer에 추가하거나 프론트로 연결할 기능"""
     # feed작성한 user channel 정보 가져오기
@@ -29,22 +31,23 @@ class CommentSerializer(serializers.ModelSerializer):
         return obj.likes.count()
     class Meta:
         model = Comment
-        fields = ["id", "feed", "text", "created_at", "updated_at", "likes", "dislikes"]
+        fields = ["id", "text", "created_at", "updated_at", "likes", "dislikes"]
 
 
 class FeedListSerializer(serializers.ModelSerializer):  
     user = serializers.SerializerMethodField()
+    tag = TagSerializer(many=True)
 
     def get_user(self, obj):
         return obj.user.username  #feed작성한 username값
 
     class Meta:
         model = Feed
-        fields = ['title', 'image', 'user',]
+        fields = ['title', 'image', 'user', 'video_key', 'tag']
 
 class FeedCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key', 'tag',]
+        fields = ["title", 'context','image', 'video_key', 'tag']
         extra_kwargs = {'likes': {'read_only' : True}}
