@@ -22,7 +22,7 @@ class FeedDetailSerializer(serializers.ModelSerializer):
                         'likes': {'read_only' : True}}
     
     def get_user(self, obj):
-        return obj.user.username  #Feed, author의 email값
+        return obj.user.username  #Feed, author의 username값
 
     def get_comments_count(self, obj):
         return obj.comments.count()

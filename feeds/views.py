@@ -125,13 +125,13 @@ class FeedDetailView(APIView, HitCountDetailView):
     # 조회수
     model = Feed    
     
-    def get(self, request, author_id, feed_id):
+    def get(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # feed 조회수 기능
-    def post(self, request, author_id, feed_id):
+    def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         feed.click
         return Response("조회수 +1", status=status.HTTP_200_OK)
