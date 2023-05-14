@@ -4,6 +4,7 @@ from users.serializers import TagSerializer
 
 class FeedDetailSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     tag = TagSerializer(many=True)
@@ -19,16 +20,19 @@ class FeedDetailSerializer(serializers.ModelSerializer):
                         'user' : {'read_only' : True},
                         'created_at' : {'read_only' : True},
                         'updated_at' : {'read_only' : True},
-                        'likes': {'read_only' : True}}
+                        }
     
     def get_user(self, obj):
-        return obj.user.username  #Feed, author의 email값
+        return obj.user.username  #Feed, author의 username값
+
+    def get_user_id(self, obj):
+        return obj.user.id  #Feed, author의 id값
 
     def get_comments_count(self, obj):
         return obj.comments.count()
 
     def get_likes_count(self, obj):
-        return obj.likes.count()
+        return 0 #obj.likes.count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -54,13 +58,11 @@ class FeedListSerializer(serializers.ModelSerializer):
         
 
 class FeedCreateSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key', 'tag']
-
+        fields = ["title", 'context','image', 'video_key', 'tag', 'likes',]
 
 class FeedSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ["title","context",]
+        fields = ["title","context","id",]
