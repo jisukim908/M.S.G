@@ -14,17 +14,25 @@ from hitcount.views import HitCountDetailView
 from django.views.generic import ListView
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-
+from feeds.models import Like
 
 class FeedListView(APIView, ListView):
     model = Feed
     paginate_by = 12
 
     def get(self, request):
-        ### -created_at 이 아니라 created_date 로 수정해주어야 함!!
         feeds = Feed.objects.all().order_by("-created_date")
         serializer = FeedListSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CommentsView(APIView):
+
+    def get(self, request, feed_id):
+        # 댓글 가져오기
+        comments = Comment.objects.filter(feed__id=feed_id)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
 
 class CommentsView(APIView):
     permission_classes = [IsAuthenticated]
@@ -35,6 +43,7 @@ class CommentsView(APIView):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
+    permission_classes = [IsAuthenticated]
     def post(self, request, feed_id):
         # 댓글 생성
         feeds = get_object_or_404(Feed, pk=feed_id)
@@ -115,11 +124,9 @@ class FeedSearchView(generics.ListCreateAPIView):
     
 class FeedDetailView(APIView, HitCountDetailView):
     #feed 상세페이지
-
     # 조회수
     model = Feed    
     
-    ### authonr_id 추가해주어야함!!
     def get(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedDetailSerializer(feed)
@@ -153,8 +160,11 @@ class FeedLikeView(APIView):
     def post(self, request, feed_id):
         feed = get_object_or_404(Feed, id=feed_id)
         if request.user in feed.likes.all():
-            feed.likes.remove(request.user) # like 요청 유저가 없으면 제거
+            #like 요청 유저가 있으면 삭제
+            Like.objects.delete(user_id=request.user.id, feed_id=feed_id)
             return Response("좋아요", status=status.HTTP_200_OK)
         else:
-            feed.likes.add(request.user) #like 요청 유저가 없으면 추가
+            #like 요청 유저가 없으면 추가
+            Like.objects.create(user_id=request.user.id, feed_id=feed_id)
             return Response("좋아요 취소!", status=status.HTTP_200_OK)
+
