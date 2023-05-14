@@ -68,4 +68,4 @@ class FeedCreateSerializer(serializers.ModelSerializer):
 class FeedSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ["title","context",]
+        fields = ["title","context","id",]
