@@ -41,26 +41,29 @@ class CommentSerializer(serializers.ModelSerializer):
         return obj.likes.count()
     class Meta:
         model = Comment
-        fields = ["id", "text", "created_at", "updated_at", "likes", "dislikes", "user"]
+        fields = ["id", "text", "created_at", "updated_at", "likes", "dislikes", "user",]
 
 
 class FeedListSerializer(serializers.ModelSerializer):  
     user = serializers.SerializerMethodField()
     tag = TagSerializer(many=True)
+    likes_count = serializers.SerializerMethodField()
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
 
     def get_user(self, obj):
         return obj.user.username  #feed작성한 username값
     
     class Meta:
         model = Feed
-
-        fields = ['id', 'title', 'image', 'user', 'video_key', 'tag']
+        fields = ['id', 'title', 'image', 'user', 'video_key', 'tag', 'likes_count',]
         
 
 class FeedCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key', 'tag', 'likes',]
+        fields = ["title", 'context','image', 'video_key', 'tag', 'likes',] # 더미데이터 작성을 위해 만들어둠. 나중에 likes 빼기
 
 class FeedSearchSerializer(serializers.ModelSerializer):
     class Meta:

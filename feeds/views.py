@@ -36,14 +36,12 @@ class CommentsView(APIView):
 
 class CommentsView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request, feed_id):
         # 댓글 가져오기
         comments = Comment.objects.filter(feed__id=feed_id)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated]
     def post(self, request, feed_id):
         # 댓글 생성
         feeds = get_object_or_404(Feed, pk=feed_id)
