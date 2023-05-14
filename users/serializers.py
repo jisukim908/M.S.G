@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from users.tokens import account_activation_token
 
+from drf_extra_fields.fields import Base64ImageField
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,9 +18,11 @@ class TagSerializer(serializers.ModelSerializer):
     
     def __str__(self):
         return self.name
-    
+
+
 # 회원가입
 class UserSerializer(serializers.ModelSerializer):
+    profile_image = Base64ImageField(required=False)
     class Meta:
         model = User
         fields = ['id', 'email', 'password', 'username', 'profile_image', 'bio', 'joined_at', 'tags', 'followings']
@@ -73,3 +76,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
     
+
+
