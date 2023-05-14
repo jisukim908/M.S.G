@@ -32,11 +32,12 @@ class FeedDetailSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     def get_likes_count(self, obj):
         return obj.likes.count()
     class Meta:
         model = Comment
-        fields = ["id", "feed", "text", "created_at", "updated_at", "likes", "dislikes"]
+        fields = ["id", "text", "created_at", "updated_at", "likes", "dislikes", "user"]
 
 
 class FeedListSerializer(serializers.ModelSerializer):  
@@ -48,11 +49,18 @@ class FeedListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ['id','title', 'image', 'user', 'tag',]
+
+        fields = ['id', 'title', 'image', 'user', 'video_key', 'tag']
+        
 
 class FeedCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ["title", 'context','image', 'video_key', 'tag',]
-        extra_kwargs = {'likes': {'read_only' : True}}
+        fields = ["title", 'context','image', 'video_key', 'tag']
+
+
+class FeedSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feed
+        fields = ["title","context",]
