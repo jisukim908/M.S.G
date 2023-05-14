@@ -32,7 +32,6 @@ class Like(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, null=True)
 
-
 class Comment(models.Model):
     feed = models.ForeignKey(Feed, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(

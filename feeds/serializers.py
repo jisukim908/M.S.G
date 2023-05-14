@@ -4,6 +4,7 @@ from users.serializers import TagSerializer
 
 class FeedDetailSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     tag = TagSerializer(many=True)
@@ -23,6 +24,9 @@ class FeedDetailSerializer(serializers.ModelSerializer):
     
     def get_user(self, obj):
         return obj.user.username  #Feed, author의 username값
+
+    def get_user_id(self, obj):
+        return obj.user.id  #Feed, author의 id값
 
     def get_comments_count(self, obj):
         return obj.comments.count()
