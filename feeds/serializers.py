@@ -48,7 +48,7 @@ class FeedListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Feed
-        fields = ['title', 'image', 'user', 'tag',]
+        fields = ['id','title', 'image', 'user', 'tag',]
 
 class FeedCreateSerializer(serializers.ModelSerializer):
     

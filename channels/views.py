@@ -42,23 +42,23 @@ class ChannelAdminView(APIView, HitCountDetailView):
     # 관리페이지 안에서 수정
     def put(self, request, user_id, feed_id):
         permission_classes = [permissions.IsAuthenticated]
+        # if request.user.id == user_id:
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedCreateSerializer(feed, data = request.data)
-        if request.user == feed.user:
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #    return Response("권한이 없습니다.")
 
     # 관리페이지 안에서 삭제
     def delete(self, request, user_id, feed_id):
+        # if request.user.id == user_id:
         permission_classes = [permissions.IsAuthenticated]
         feed = get_object_or_404(Feed, id=feed_id)
-        if request.user == feed.user:
-            feed.delete()
-            return Response("삭제되었습니다.",status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response("권한이 없습니다.", status=status.HTTP_403_FORBIDDEN)
+        feed.delete()
+        return Response("삭제되었습니다.",status=status.HTTP_204_NO_CONTENT)
+        #else:
+        #    return Response("권한이 없습니다.")
