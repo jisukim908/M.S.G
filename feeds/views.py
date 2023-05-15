@@ -156,13 +156,14 @@ class FeedLikeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, feed_id):
-        feed = get_object_or_404(Feed, id=feed_id)
-        if request.user in feed.likes.all():
+        liked_user = Like.objects.filter(user_id=request.user, feed_id=feed_id).last() #가져오는 것ㅇ ㅣ있으면
+
+        if liked_user:
             #like 요청 유저가 있으면 삭제
-            Like.objects.delete(user_id=request.user.id, feed_id=feed_id)
-            return Response("좋아요", status=status.HTTP_200_OK)
+            liked_user.delete()
+            return Response("좋아요 👍", status=status.HTTP_200_OK)
         else:
             #like 요청 유저가 없으면 추가
             Like.objects.create(user_id=request.user.id, feed_id=feed_id)
-            return Response("좋아요 취소!", status=status.HTTP_200_OK)
+            return Response("좋아요 취소", status=status.HTTP_200_OK)
 

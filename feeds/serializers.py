@@ -2,6 +2,13 @@ from rest_framework import serializers
 from feeds.models import Feed, Comment
 from users.serializers import TagSerializer
 
+#from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+#from django.utils.encoding import force_bytes
+#from users.tokens import account_activation_token
+
+#from drf_extra_fields.fields import Base64ImageField
+# from drf_extra_fields.fields import Base64ImageField
+
 class FeedDetailSerializer(serializers.ModelSerializer): 
     user = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
@@ -32,7 +39,7 @@ class FeedDetailSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
     def get_likes_count(self, obj):
-        return 0 #obj.likes.count()
+        return obj.likes.count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -61,6 +68,8 @@ class FeedListSerializer(serializers.ModelSerializer):
         
 
 class FeedCreateSerializer(serializers.ModelSerializer):
+    # image = Base64ImageField(required=False)
+
     class Meta:
         model = Feed
         fields = ["title", 'context','image', 'video_key', 'tag', 'likes',] # 더미데이터 작성을 위해 만들어둠. 나중에 likes 빼기
