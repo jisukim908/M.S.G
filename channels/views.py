@@ -45,6 +45,7 @@ class ChannelAdminView(APIView, HitCountDetailView):
         # if request.user.id == user_id:
         feed = get_object_or_404(Feed, id=feed_id)
         serializer = FeedCreateSerializer(feed, data = request.data)
+        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

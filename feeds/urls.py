@@ -10,10 +10,8 @@ urlpatterns = [
     path('<int:feed_id>/', views.FeedDetailView.as_view(), name="feed_detail"),
     # feed like, 좋아요 표시
     path('<int:feed_id>/likes/', views.FeedLikeView.as_view(), name="likes_feed"),
+    
     # comment가져오기
-    # path("comments/", views.CommentsView.as_view(), name="comments"),
-    # path("comments/<int:comment_id>/", views.CommentsView.as_view(), name="comment_detail"),
-
     path('comments/<int:feed_id>/', views.CommentsView.as_view(), name="comments"),
     path(
         "comments/<int:comment_id>/like/",
