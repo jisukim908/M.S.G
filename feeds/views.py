@@ -160,9 +160,11 @@ class FeedLikeView(APIView):
         if request.user in feed.likes.all():
             #like 요청 유저가 있으면 삭제
             Like.objects.delete(user_id=request.user.id, feed_id=feed_id)
+            feed.like_count -= 1
             return Response("좋아요", status=status.HTTP_200_OK)
         else:
             #like 요청 유저가 없으면 추가
             Like.objects.create(user_id=request.user.id, feed_id=feed_id)
+            feed.like_count += 1
             return Response("좋아요 취소!", status=status.HTTP_200_OK)
 

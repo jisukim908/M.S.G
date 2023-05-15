@@ -66,9 +66,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -210,6 +210,14 @@ SIMPLE_JWT = {
 
 # 모든 허용한 상태로 수정 필요
 CORS_ALLOW_ALL_ORIGINS = True
+
+# cors 허용 리스트 추가
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:8000',
+                        'http://localhost:8000',
+                        'http://127.0.0.1:5501',
+                        'http://localhost:5501',
+                        ]
+CORS_ALLOW_CREDENTIALS = True
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
