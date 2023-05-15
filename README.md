@@ -6,7 +6,7 @@ It is a video&writing platfrom based on Django Restframework.
 
 ----------
 ## stack
-- python 3.11 미만으로
+- python 3.8 이상
 - django
 - html
 - javascript
