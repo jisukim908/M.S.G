@@ -22,7 +22,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 # 회원가입
 class UserSerializer(serializers.ModelSerializer):
-    profile_image = Base64ImageField(required=False)
+    # profile_image = Base64ImageField(required=False)
     class Meta:
         model = User
         fields = ['id', 'email', 'password', 'username', 'profile_image', 'bio', 'joined_at', 'tags', 'followings']
