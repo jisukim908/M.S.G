@@ -39,7 +39,7 @@ class FeedDetailSerializer(serializers.ModelSerializer):
         return obj.comments.count()
 
     def get_likes_count(self, obj):
-        return 0 #obj.likes.count()
+        return obj.likes.count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
