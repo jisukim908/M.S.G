@@ -1,6 +1,6 @@
 # video&writing platfrom MSG
 
-# MSG means "My Story Gee"
+### MSG means "My Story Gee"
 
 It is a video&writing platfrom based on Django Restframework.
 
